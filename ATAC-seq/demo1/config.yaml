@@ -1,3 +1,3 @@
-samples: [SRR7629152] #, SRR7629153] #, SRR7629154, SRR7629161, SRR7629162, SRR7629163]
-workdir: /home/wangjl/data/ATAC/fq/test3
+samples: [SRR7629152, SRR7629153, SRR7629154, SRR7629161, SRR7629162, SRR7629163]
+workdir: /home/wangjl/data/ATAC/test #/fq/test4
 Snk_RootDir: /home/wangjl/soft/snakemakeWorkflow/ATAC-seq/demo1

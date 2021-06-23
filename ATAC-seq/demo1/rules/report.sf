@@ -2,7 +2,7 @@
 
 rule report:
 	input:
-		"images/ATAC-seq_Rule.svg"
+		"report/images/ATAC-seq_Rule.svg"
 	output:"report/index.html"
 	run: 
 		import time
@@ -44,8 +44,8 @@ h3{
 		'''
 		
 		workflow="<div class='content'><h1>ATAC-seq Report</h1>"+ timsString + "<br>" + \
-		"<h2>Workflow</h2> <h3>Rules</h3>  <image class=h200 src='../images/ATAC-seq_Rule.svg'>" +\
-		"<h3>Samples</h3>  <image class=h200 src='../images/ATAC-seq_Sample.svg'><br>"
+		"<h2>Workflow</h2> <h3>Rules</h3>  <image class=h200 src='images/ATAC-seq_Rule.svg'>" +\
+		"<h3>Samples</h3>  <image class=h200 src='images/ATAC-seq_Sample.svg'><br>"
 		
 		files='<h2>Output</h2><h3>raw/</h3> Raw fastq file' +\
 		'<h3>QC_raw/</h3> <a target="_blank" href="../QC_raw/multiqc/multiqc_report.html">report</a>, <a href="../QC_raw/multiqc/multiqc_report.html.log">log</a>' +\

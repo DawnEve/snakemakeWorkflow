@@ -8,8 +8,8 @@ rule cp_config:
 rule get_workflow_dag:
 	input:"config.yaml"
 	output: 
-		"images/ATAC-seq_Sample.svg",
-		"images/ATAC-seq_Rule.svg"
+		"report/images/ATAC-seq_Sample.svg",
+		"report/images/ATAC-seq_Rule.svg"
 	shell:
 		"snakemake -s {root}/main.sf --dag | dot -Tsvg > {output[0]} && "
 		"snakemake -s {root}/main.sf --rulegraph 2> /dev/null | dot -Tsvg > {output[1]}"

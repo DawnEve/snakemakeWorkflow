@@ -1,1 +1,2 @@
 v0.1 init ATAC-seq workflow
+v0.2 run on real data
