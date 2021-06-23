@@ -1,0 +1,38 @@
+rule index:
+	input:"{sample}.bam"
+	output:"{sample}.bam.bai"
+	shell:"samtools index {input}"
+
+## rm MT
+rule get_chrlist:
+	input:"map/{sample}.sort.bam"
+	output:"map_clean/{sample}.chrlist"
+	log:"map_clean/{sample}.chrlist.log"
+	shell:"samtools view  {input}| grep -v '^#'| awk '{{print $3}}' \
+		| sort | uniq -c| grep -E -v 'GL|KI|JH|KB|chrM' | grep chr | awk '{{print $2}}' | xargs > {output} 2>{log}"
+
+rule del_MT:
+	input:"map_clean/{sample}.chrlist", "map/{sample}.sort.bam", "map/{sample}.sort.bam.bai"
+	output:"map_clean/{sample}.sort.delMT.bam"
+	log:"map_clean/{sample}.sort.delMT.bam.log"
+	shell:"samtools view -b {input[1]} `cat {input[0]}` > {output} 2>{log}"
+
+# filter by MAPQ:
+# 1 需要不需要按MAPQ过滤？需要，下例bowtie2按照>10过滤的。
+# 2 三个过滤怎么排序好？不确定
+# 3 怎么设置其他参数?
+# https://informatics.fas.harvard.edu/atac-seq-guidelines-old-version.html#alignments
+# https://github.com/ENCODE-DCC/atac-seq-pipeline/blob/master/src/encode_task_filter.py
+rule rm_low_MAPQ:
+	input:"map_clean/{sample}.sort.delMT.bam"
+	output:"map_clean/{sample}.sort.delMT.HmapQ.bam"
+	shell:"samtools view -bh -q 50 {input} > {output}"
+
+# remove duplicate: 这个放最后的优势是，会自动生成bai文件
+rule rm_dup:
+	input:"map_clean/{sample}.sort.delMT.HmapQ.bam"
+	output:"map_clean/{sample}.final.bam"
+	threads: 8
+	params:tmp="map_clean/tmp/{sample}"
+	log:"map_clean/{sample}.sort.delMT.HmapQ.sambambaRmDup.bam.log"
+	shell:"sambamba markdup -r -t {threads} --tmpdir {params.tmp} {input} {output} >{log} 2>&1"

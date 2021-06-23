@@ -1,0 +1,16 @@
+configfile: "config.yaml"
+workdir: config["workdir"]
+
+SI=config["samples"]
+
+
+subworkflow workflow1:
+    #workdir: "/data/wangjl/ATAC/fq/test3"
+    snakefile: "/home/wangjl/soft/snakemakeWorkflow/ATAC-seq/demo1/main.sf"
+    #configfile: "/home/wangjl/soft/snakemakeWorkflow/ATAC-seq/demo1/config.yaml"
+
+rule test3:
+    input:
+        workflow1( "QC_clean/multiqc/multiqc_report.html" )
+    output:"ok.txt"
+    shell: "ls {input} -lth > {output}"

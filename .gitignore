@@ -1,0 +1,6 @@
+dustbin/
+backup/
+
+
+.snakemake
+

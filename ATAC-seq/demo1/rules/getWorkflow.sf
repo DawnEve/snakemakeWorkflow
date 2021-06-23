@@ -1,0 +1,16 @@
+root=config["Snk_RootDir"]
+
+rule cp_config:
+	output:temp("config.yaml")
+	message: "cp config file from snakeRoot to workdir"
+	shell:"cp {root}/config.yaml {output}"
+
+rule get_workflow_dag:
+	input:"config.yaml"
+	output: 
+		"images/ATAC-seq_Sample.svg",
+		"images/ATAC-seq_Rule.svg"
+	shell:
+		"snakemake -s {root}/main.sf --dag | dot -Tsvg > {output[0]} && "
+		"snakemake -s {root}/main.sf --rulegraph 2> /dev/null | dot -Tsvg > {output[1]}"
+

@@ -1,0 +1,30 @@
+configfile: "config.yaml"
+workdir: config["workdir"]
+
+SI=config["samples"]
+
+BWA_INDEX="/home/wangjl/data/ref/human/UCSC/bwa/hg38_fa"
+
+from snakemake.utils import R
+
+rule all:
+	input:
+		"QC_raw/multiqc/multiqc_report.html", #fastq QC
+		"QC_clean/multiqc/multiqc_report.html",
+		
+		expand("map_clean/{sample}.final.bam", sample=SI), # 最终的 3次过滤的 bam
+		# expand("QC_map/TSS/{sample}.TSS.heatmap.pdf", sample=SI), #BAM QC: TSS (very slow:40min 1e4 reads)
+		expand("QC_map/fragment_length/fragment_length_{sample}.pdf", sample=SI), # BAM QC: 片段长度
+
+		expand("homer/{sample}/knownResults.html", sample=SI)
+
+# 一个小任务有一个输出文件，单线不分叉
+include:"rules/01qc_raw.sf"
+include:"rules/02cutAdaptor.sf"
+include:"rules/03BWA_mapping.sf"
+include:"rules/04Bam_filter.sf"
+include:"rules/04-2-Bam_QC.sf"
+
+include:"rules/05call_peak.sf"
+include:"rules/06homer_find_motif.sf"
+

@@ -1,0 +1,51 @@
+########################
+# MAP_QC: 2 target file
+########################
+
+## target 1
+rule MAP_QC_bamCoverage:
+	input: "map_clean/{sample}.final.bam"
+	output: "QC_map/{sample}.bw"
+	log: "QC_map/{sample}.bw.log"
+	shell: "bamCoverage -b {input} -o {output} >{log} 2>&1"
+
+rule MAP_QC_computeMatrix:
+	input: "QC_map/{sample}.bw"
+	output:"QC_map/matrix/{sample}.mat.gz"
+	log: "QC_map/matrix/{sample}.mat.gz.log"
+	shell:"computeMatrix reference-point \
+       --referencePoint TSS \
+       -S {input} \
+       -R /home/wangjl/data/ref/human/UCSC/hg38_refseq_whole_gene.bed \
+       -b 1000 \
+       -a 1000 \
+       -o {output} >{log} 2>&1"
+
+rule MAP_QC_plotHeatmap:
+	input: "QC_map/matrix/{sample}.mat.gz",
+	output:"QC_map/TSS/{sample}.TSS.heatmap.pdf"
+	log: "QC_map/TSS/{sample}.TSS.heatmap.pdf.log"
+	shell:"plotHeatmap -m {input} -out {output}"
+
+## target 2
+rule get_fragment_length:
+	input:"map_clean/{sample}.final.bam"
+	output:"QC_map/fragment_length/{sample}.fragment.length.txt"
+	log:"QC_map/{sample}.fragment.length.txt.log"
+	shell:"samtools view {input} | \
+		awk -F'\t' 'function abs(x){{return ((x < 0.0) ? -x : x)}} {{print $1\"\t\"abs($9)}}' | \
+		sort | uniq | cut -f2 > {output} 2>{log}"
+
+# https://snakemake.readthedocs.io/en/stable/snakefiles/rules.html
+root=config["Snk_RootDir"]
+rule draw_plot:
+	input: 
+		"map_clean/{sample}.final.bam",
+		"QC_map/fragment_length/{sample}.fragment.length.txt"
+	output: "QC_map/fragment_length/fragment_length_{sample}.pdf"
+	log: "QC_map/fragment_length/fragment_length_{sample}.pdf.log"
+	params: 
+		key="{sample}",
+		workdir=config["workdir"]
+	shell:"Rscript {root}/scripts/plot04_fragment_length.R {input[0]} {output[0]} {params.key} {params.workdir} >{log} 2>&1"
+	
