@@ -6,8 +6,9 @@ rule cut_adapter:
 		"clean/{sample}_1.fastq.gz",
 		"clean/{sample}_2.fastq.gz"
 	log:"clean/{sample}_cutapapt.log"
+	threads: 4
 	shell:
-		"cutadapt -j 4 --time 1 -e 0.1 -O 3 --quality-cutoff 25 \
+		"cutadapt -j {threads} --time 1 -e 0.1 -O 3 --quality-cutoff 25 \
 		-m 15 -a CTGTCTCTTATA \
 		-A AGACGGGAAGAGCGTCGTGAGGGAAGAGTGTAGATCTCGGTGGTCGCGTATCATT \
 		-o {output[0]} -p {output[1]} {input[0]} {input[1]} >{log} 2>&1"

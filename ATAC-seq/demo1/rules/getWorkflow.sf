@@ -1,9 +1,12 @@
+# get dag image
 root=config["Snk_RootDir"]
 
-rule cp_config:
-	output:temp("config.yaml")
-	message: "cp config file from snakeRoot to workdir"
-	shell:"cp {root}/config.yaml {output}"
+#rule cp_config:
+#	output: 
+#		#"config.yaml"
+#		temp("config.yaml")
+#	message: "===================>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> CP config file from snakeRoot to workdir"
+#	shell:"cp {cwd}/config.yaml {output}"
 
 rule get_workflow_dag:
 	input:"config.yaml"

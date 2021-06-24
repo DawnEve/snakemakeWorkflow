@@ -9,7 +9,7 @@ rule all:
 		#expand("QC_map/TSS/{sample}.TSS.heatmap.pdf", sample=SI), #BAM QC: TSS (very slow:40min 1e4 reads)
 		"report/index.html"
 
-include:"rules/04-2-Bam_QC.sf"
+#include:"rules/04-2-Bam_QC.sf"
 include:"rules/getWorkflow.sf"
 include:"rules/report.sf"
 

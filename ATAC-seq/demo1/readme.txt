@@ -1,11 +1,14 @@
 This workflow suits for PE ATAC-seq
+default: human hg38
 v0.1
+v0.2
 
-1. Just modify config.yaml
+
+1. Just enter your working directory, create a new text file named config.yaml
 set 
-  - example names 
+  - samples: example names, for SRR7629163_1.fastq.gz, SRR7629163_2.fastq.gz, you only need to set SRR7629163 
   - workdir (no / at the end)
-  - and this snakemakefile script root dir (no / at the end)
+  - and Snk_RootDir:  the snakemakefile script root dir (no / at the end)
 
 
 2.Then you have to put your raw fastq.gz data in 
@@ -15,7 +18,7 @@ raw/ under the work dir you set.
 3. modify the rules/01 02 to satisfy your input filenames.
 
 
-4. First dry run 
+4. First dry run from your working directory
 $ snakemake -s main.sf -np
 
 

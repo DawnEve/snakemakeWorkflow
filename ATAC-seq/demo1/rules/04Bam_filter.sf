@@ -1,21 +1,25 @@
 rule index:
 	input:"{sample}.bam"
 	output:"{sample}.bam.bai"
-	shell:"samtools index {input}"
+	threads: 4
+	shell:"samtools index -@ {threads} {input}"
+
 
 ## rm MT
 rule get_chrlist:
 	input:"map/{sample}.sort.bam"
 	output:"map_clean/{sample}.chrlist"
 	log:"map_clean/{sample}.chrlist.log"
-	shell:"samtools view  {input}| grep -v '^#'| awk '{{print $3}}' \
+	threads: 4
+	shell:"samtools view -@ {threads} {input}| grep -v '^#'| awk '{{print $3}}' \
 		| sort | uniq -c| grep -E -v 'GL|KI|JH|KB|chrM' | grep chr | awk '{{print $2}}' | xargs > {output} 2>{log}"
 
 rule del_MT:
 	input:"map_clean/{sample}.chrlist", "map/{sample}.sort.bam", "map/{sample}.sort.bam.bai"
 	output:"map_clean/{sample}.sort.delMT.bam"
 	log:"map_clean/{sample}.sort.delMT.bam.log"
-	shell:"samtools view -b {input[1]} `cat {input[0]}` > {output} 2>{log}"
+	threads: 4
+	shell:"samtools view -@ {threads} -b {input[1]} `cat {input[0]}` > {output} 2>{log}"
 
 # filter by MAPQ:
 # 1 需要不需要按MAPQ过滤？需要，下例bowtie2按照>10过滤的。
@@ -26,7 +30,8 @@ rule del_MT:
 rule rm_low_MAPQ:
 	input:"map_clean/{sample}.sort.delMT.bam"
 	output:"map_clean/{sample}.sort.delMT.HmapQ.bam"
-	shell:"samtools view -bh -q 50 {input} > {output}"
+	threads: 4
+	shell:"samtools view -@ {threads} -bh -q 50 {input} > {output}"
 
 # remove duplicate: 这个放最后的优势是，会自动生成bai文件
 rule rm_dup:
