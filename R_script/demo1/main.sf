@@ -1,0 +1,32 @@
+# separate task into slices
+batch=30
+total=100
+last=0
+SI=[]
+for i in range(1, total):
+	if i % batch ==0:
+		SI.append( str(last+1)+"_"+str(i) );
+		last=i
+if last+1 < total:
+	SI.append( str(last+1)+"_"+str(total) );
+print("SI=", SI);
+
+# do the task, parameters within outfile name.
+rule all:
+	input: "worker/stat.txt",
+		
+rule worker:
+	input: "cid.txt"
+	output: "worker/result_{sample}.txt"
+	threads: 1
+	script: "scripts/worker.R"
+
+rule combine:
+	input: expand("worker/result_{sample}.txt", sample=SI),
+	output: "worker/total.txt"
+	shell: "cat worker/result* > {output}"
+
+rule stat:
+	input: "worker/total.txt"
+	output:"worker/stat.txt"
+	script: "scripts/stat.R"
