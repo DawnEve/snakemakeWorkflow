@@ -13,10 +13,11 @@ rule all:
 		"QC_clean/multiqc/multiqc_report.html",
 		
 		expand("map_clean/{sample}.final.bam", sample=SI), # 最终的 3次过滤的 bam
-		expand("QC_map/TSS/{sample}.TSS.heatmap.pdf", sample=SI), #BAM QC: TSS (very slow:40min 1e4 reads)
+		# expand("QC_map/TSS/{sample}.TSS.heatmap.pdf", sample=SI), #BAM QC: TSS (very slow:40min 1e4 reads)
 		expand("QC_map/fragment_length/fragment_length_{sample}.pdf", sample=SI), # BAM QC: 片段长度
 
-		expand("homer/{sample}/knownResults.html", sample=SI),
+		expand("macs2_result/{sample}_peaks.narrowPeak", sample=SI), #macs2
+		expand("homer/{sample}/knownResults.html", sample=SI), #homer
 		"report/index.html"
 
 # 一个小任务有一个输出文件，单线不分叉

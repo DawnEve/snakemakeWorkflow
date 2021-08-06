@@ -1,5 +1,5 @@
 How to run a heavy task with multiple CPU cores?
-Keywords: multi-threads, parrallel computing;
+Keywords: multi-threads, parallel computing;
 
 v0.1 run in shell
 v0.2 add how to run in R

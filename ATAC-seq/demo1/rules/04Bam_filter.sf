@@ -1,3 +1,4 @@
+# filter BAM: 1.rm MT; 2.keep high MAPQ; 3.rm duplicate
 rule index:
 	input:"{sample}.bam"
 	output:"{sample}.bam.bai"
@@ -31,7 +32,8 @@ rule rm_low_MAPQ:
 	input:"map_clean/{sample}.sort.delMT.bam"
 	output:"map_clean/{sample}.sort.delMT.HmapQ.bam"
 	threads: 4
-	shell:"samtools view -@ {threads} -bh -q 50 {input} > {output}"
+	params: q="0" # maybe: 30 for BWA
+	shell:"samtools view -@ {threads} -bh -q {params.q} {input} > {output}"
 
 # remove duplicate: 这个放最后的优势是，会自动生成bai文件
 rule rm_dup:

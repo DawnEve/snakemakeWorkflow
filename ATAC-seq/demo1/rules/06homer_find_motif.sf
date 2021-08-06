@@ -4,6 +4,6 @@ rule homer_find_motif:
 	input: "macs2_result/{sample}_peaks.narrowPeak"
 	output: "homer/{sample}/knownResults.html"
 	params: out_dir="homer/{sample}/"
-	threads: 4
+	threads: 2
 	log:"homer/{sample}/knownResults.html.log"
 	shell:"findMotifsGenome.pl {input} {GENOME} {params.out_dir} -size given -p {threads} >{log} 2>&1"
