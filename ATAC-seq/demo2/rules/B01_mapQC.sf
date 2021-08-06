@@ -1,0 +1,46 @@
+rule index:
+	input: "{sample}.bam"
+	output:"{sample}.bam.bai"
+	shell:"samtools index {input}"
+
+## target 1: TSS
+rule MAP_QC_bamCoverage:
+	input: "merged/{sample}.bam"
+	output: "QC_map/{sample}.bw"
+	log: "QC_map/{sample}.bw.log"
+	shell: "bamCoverage -b {input} -o {output} >{log} 2>&1"
+
+rule MAP_QC_computeMatrix:
+	input: "QC_map/{sample}.bw"
+	output:"QC_map/TSS/{sample}.mat.gz"
+	log: "QC_map/TSS/{sample}.mat.gz.log"
+	shell:"computeMatrix reference-point --referencePoint TSS \
+       -S {input} -R {REF_BED} \
+       -b 1000 -a 1000 -o {output} >{log} 2>&1"
+
+rule MAP_QC_plotHeatmap:
+	input: "QC_map/TSS/{sample}.mat.gz",
+	output:"QC_map/TSS/{sample}.TSS.heatmap.pdf"
+	log: "QC_map/TSS/{sample}.TSS.heatmap.pdf.log"
+	shell:"plotHeatmap -m {input} -out {output}"
+
+
+## target 2: fragment_length
+rule get_fragment_length:
+	input:"merged/{sample}.bam"
+	output:"QC_map/fragment_length/{sample}.fragment.length.txt"
+	log:"QC_map/fragment_length/{sample}.fragment.length.txt.log"
+	shell:"samtools view {input} | \
+		awk -F'\t' 'function abs(x){{return ((x < 0.0) ? -x : x)}} {{print $1\"\t\"abs($9)}}' | \
+		sort | uniq | cut -f2 > {output} 2>{log}"
+
+rule draw_plot:
+	input: 
+		"merged/{sample}.bam",
+		"QC_map/fragment_length/{sample}.fragment.length.txt",
+		"merged/{sample}.bam.bai"
+	output: "QC_map/fragment_length/fragment_length_{sample}.pdf"
+	params: key="{sample}"
+	log: "QC_map/fragment_length/fragment_length_{sample}.pdf.log"
+	script: "../scripts/B01_draw_fragment_length.R"
+

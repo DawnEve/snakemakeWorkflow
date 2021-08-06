@@ -1,0 +1,53 @@
+rule trim_galore:
+	input:
+		"raw/{sample}_R1.fastq.gz",
+		"raw/{sample}_R2.fastq.gz",
+	output:
+		"clean2/{sample}_R1_val_1.fq.gz",
+		"clean2/{sample}_R2_val_2.fq.gz",
+	params: out="clean2/"
+	threads: 2
+	log: "clean2/{sample}.trim.log"
+	shell:"trim_galore -j {threads} -q 25 --phred33 --length 15 -e 0.1 --stringency 3 \
+		--paired -o  {params.out}  {input} >{log} 2>&1"
+
+
+rule cut_adapter:
+	input:
+		"raw/{sample}_R1.fastq.gz",
+		"raw/{sample}_R2.fastq.gz",
+	output:
+		"clean/{sample}_R1.fastq.gz",
+		"clean/{sample}_R2.fastq.gz"
+	log:"clean/{sample}_cutapapt.log"
+	threads: 2
+	shell:
+		"cutadapt -j {threads} --time 1 -e 0.1 -O 3 --quality-cutoff 25 \
+		-m 15 -a CTGTCTCTTATA \
+		-A AGACGGGAAGAGCGTCGTGAGGGAAGAGTGTAGATCTCGGTGGTCGCGTATCATT \
+		-o {output[0]} -p {output[1]} {input[0]} {input[1]} >{log} 2>&1"
+
+
+
+rule QC_clean_fq:
+	input: 
+		"clean/{sample}_R1.fastq.gz",
+		"clean/{sample}_R2.fastq.gz"
+	output: 
+		"QC_clean/{sample}_R1_fastqc.html",
+		"QC_clean/{sample}_R2_fastqc.html"
+	params:out_dir="QC_clean"
+	log: "QC_clean/{sample}_fastqc.html.log"
+	threads: 2
+	shell: 
+		  "fastqc -t {threads} {input} -o {params.out_dir} >{log} 2>&1"
+
+rule multi_QC_clean:
+	input: expand("QC_clean/{sample}_R2_fastqc.html", sample=SI)
+	output:"QC_clean/multiqc/multiqc_report.html"
+	params: 
+		in_dir="QC_clean",
+		out_dir="QC_clean/multiqc/"
+	log: "QC_clean/multiqc/multiqc_report.html.log"
+	shell:"multiqc {params.in_dir}/*fastqc.zip -o {params.out_dir} >{log} 2>&1"
+

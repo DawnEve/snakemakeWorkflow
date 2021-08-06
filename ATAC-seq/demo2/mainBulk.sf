@@ -1,0 +1,20 @@
+SI=["total"]  
+
+rule all:
+	input:
+		expand("homer/{sample}/knownResults.html", sample=SI)
+
+rule macs2_callpeak:
+	input:"merged/{sample}.bam"
+	output:"macs2_result/{sample}_peaks.narrowPeak"
+	params:
+		"{sample}",
+		"macs2_result"
+	log: "macs2_result/{sample}_peaks.narrowPeak.log"
+	shell: "macs2 callpeak -t {input} -f BAM -g hs \
+		--shift -100 --extsize 200 --nomodel \
+		-B --SPMR --call-summits \
+		--outdir {params[1]} -n {params[0]} >{log} 2>&1"
+
+include:"rules/06_find_motif.sf"
+

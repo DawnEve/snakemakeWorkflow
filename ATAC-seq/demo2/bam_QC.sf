@@ -1,0 +1,10 @@
+REF_BED="/home/wangjl/data/ref/human/UCSC/hg38_refseq_whole_gene.bed"
+SI=["total"]
+
+rule all:
+	input:
+		expand("QC_map/TSS/{sample}.TSS.heatmap.pdf", sample=SI), #BAM QC: TSS (巨慢)
+		expand("QC_map/fragment_length/fragment_length_{sample}.pdf", sample=SI),
+
+include: "rules/B01_mapQC.sf"
+
