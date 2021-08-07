@@ -1,0 +1,22 @@
+rule get_bed:
+	input:"macs2_result/{sample}_peaks.narrowPeak"
+	output: "macs2_result/{sample}.bed"
+	shell:"awk '{{print $1\"\t\"$2\"\t\"$3\"\t\"$4\"\t\"$5\"\t\"$6}}' {input} >{output}"
+
+# 依赖每个样本的去重、去MT后的bam文件
+rule get_matrix:
+	input: "macs2_result/total.bed"
+	output: "matrix/matrix0.txt"
+	log: "matrix/matrix0.txt.log"
+	shell: "bedtools multicov -bams `ls map_clean/*.final.bam` -bed {input} >{output}"
+
+# 获取样本名字
+rule get_sample_name:
+	output: "matrix/colname.txt"
+	shell: "ls map_clean/*.final.bam |  sed -e 's/map_clean\///' -e 's/\.final\.bam//' >{output}"
+
+rule refine_matrix:
+	input: "matrix/matrix0.txt", "matrix/colname.txt"
+	output: "matrix/ATAC_raw_counts_matrix.txt"
+	script: "../scripts/F08_refine_matrix.R"
+

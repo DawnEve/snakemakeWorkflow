@@ -4,6 +4,7 @@ rule all:
 	input:
 		expand("homer/{sample}/knownResults.html", sample=SI),
 		expand("anno/{sample}_pieplot.pdf", sample=SI),
+		"matrix/ATAC_raw_counts_matrix.txt"
 
 rule macs2_callpeak:
 	input:"merged/{sample}.bam"
@@ -19,4 +20,4 @@ rule macs2_callpeak:
 
 include:"rules/06_find_motif.sf"
 include:"rules/07_peak_annotation.sf"
-
+include:"rules/08_get_matrix.sf"
