@@ -1,0 +1,15 @@
+rule peak_annotate:
+	input: "macs2_result/{sample}_peaks.narrowPeak"
+	output: "anno/{sample}_peakAnn.xls"
+	log: "anno/{sample}_peakAnn.xls.log"
+	shell: "annotatePeaks.pl {input} hg38 >{output} 2>{log}"
+
+rule get_8th_col:
+	input: "anno/{sample}_peakAnn.xls"
+	output: "anno/{sample}_anno.8th_col.txt"
+	shell: "cat {input} | awk -F '\t' '{{print $8}}' | awk -F'(' '{{print $1}}' | sed  -e 's/[ ]*\$//g' -e '1d' > {output}"	
+rule draw_pie_plot:
+	input: "anno/{sample}_anno.8th_col.txt"
+	output: "anno/{sample}_pieplot.pdf"
+	script: "../scripts/F07_pie_plot.R"
+

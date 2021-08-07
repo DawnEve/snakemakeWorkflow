@@ -5,6 +5,7 @@ v0.4 add example for run heavy R script
 v0.5 how to run snakemake in R
 v0.6 update some params
 v0.7 add ATAC-seq for plate(demo2)
+v0.8 update ATAC-seq for plate method:demo2
 #
 #->commit
 #------>push to dawneve/snakemakeWorkflow
