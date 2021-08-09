@@ -1,0 +1,3 @@
+rule merge_bam:
+        output:"merged/{sample}.bam"
+        shell: "samtools merge {output} `ls map_clean/*final.bam |xargs`"

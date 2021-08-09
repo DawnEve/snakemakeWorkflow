@@ -10,12 +10,16 @@ step1: add 1 for each cell id, by multi-threads, in batches.
 step2: combine to one result file (total.txt), sum to get the final results (stat.txt)
 
 
+
+
 2. File structure:
 ├── cid.txt
 ├── main.sf                                      
 ├── scripts
 │   ├── stat.R
 │   └── worker.R
+
+
 
 
 3. software
@@ -31,9 +35,15 @@ R version 3.6.3 (2020-02-29) -- "Holding the Windsock"
 
 
 
-4.Run:
-$ snakemake -s main.sf -j 4 -p
 
+4.Run:
+Set working directory somewhere you like, and prepare a cid.txt file in it.
+$ seq 1 100 >cid.txt
+
+Then use absolute path to run the multi-core task:
+$ snakemake -s /abs/path/to/main.sf -j 4 -p
+-j CPU cores to use.
+-p print the cmd it is runing.
 
 
 5. Result files:

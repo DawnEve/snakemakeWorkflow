@@ -21,6 +21,7 @@ rule del_MTs:
 # filter by MAPQ:
 # 1 需要不需要按MAPQ过滤？需要，下例bowtie2按照>10过滤的。
 # 2 三个过滤怎么排序好？不确定
+#	 去dup，去线粒体，低质量，未比对上的序列
 # 3 怎么设置其他参数?
 # https://informatics.fas.harvard.edu/atac-seq-guidelines-old-version.html#alignments
 # https://github.com/ENCODE-DCC/atac-seq-pipeline/blob/master/src/encode_task_filter.py
@@ -31,8 +32,17 @@ rule rm_low_MAPQ:
 	shell:"samtools view -@ {threads} -bh -q 30 {input} > {output}"
 
 # remove duplicate: 这个放最后的优势是，会自动生成bai文件
-rule rm_dup:
+
+rule sort2:
 	input:"map_clean/{sample}.sort.delMT.HmapQ.bam"
+	output:temp("map_clean/{sample}.sort.delMT.HmapQ.Sort2.bam")
+	params: tmp="/tmp/{sample}_tmp"
+	threads: 2
+	log: "map_clean/{sample}.sort.delMT.HmapQ.Sort2.bam.log"
+	shell:"samtools sort -@ {threads} -O bam -T {params.tmp} -o {output} {input} >{log} 2>&1"
+
+rule rm_dup:
+	input:"map_clean/{sample}.sort.delMT.HmapQ.Sort2.bam"
 	output:"map_clean/{sample}.final.bam"
 	threads: 8
 	params: tmp="map_clean/tmp/{sample}"

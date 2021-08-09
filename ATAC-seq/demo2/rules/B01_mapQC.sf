@@ -5,10 +5,10 @@ rule index:
 
 ## target 1: TSS
 rule MAP_QC_bamCoverage:
-	input: "merged/{sample}.bam"
+	input: "merged/{sample}.bam", "merged/{sample}.bam.bai"
 	output: "QC_map/{sample}.bw"
 	log: "QC_map/{sample}.bw.log"
-	shell: "bamCoverage -b {input} -o {output} >{log} 2>&1"
+	shell: "bamCoverage -b {input[0]} -o {output} >{log} 2>&1"
 
 rule MAP_QC_computeMatrix:
 	input: "QC_map/{sample}.bw"

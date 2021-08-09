@@ -6,5 +6,6 @@ rule all:
 		expand("QC_map/TSS/{sample}.TSS.heatmap.pdf", sample=SI), #BAM QC: TSS (巨慢)
 		expand("QC_map/fragment_length/fragment_length_{sample}.pdf", sample=SI),
 
+include:"rules/04_2_merge_bam.sf" # merge bam files
 include: "rules/B01_mapQC.sf"
 
