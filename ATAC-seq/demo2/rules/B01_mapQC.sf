@@ -1,3 +1,4 @@
+# check
 rule index:
 	input: "{sample}.bam"
 	output:"{sample}.bam.bai"
@@ -8,13 +9,15 @@ rule MAP_QC_bamCoverage:
 	input: "merged/{sample}.bam", "merged/{sample}.bam.bai"
 	output: "QC_map/{sample}.bw"
 	log: "QC_map/{sample}.bw.log"
-	shell: "bamCoverage -b {input[0]} -o {output} >{log} 2>&1"
+	threads: 4
+	shell: "bamCoverage -p {threads} -b {input[0]} -o {output} >{log} 2>&1"
 
 rule MAP_QC_computeMatrix:
 	input: "QC_map/{sample}.bw"
 	output:"QC_map/TSS/{sample}.mat.gz"
 	log: "QC_map/TSS/{sample}.mat.gz.log"
-	shell:"computeMatrix reference-point --referencePoint TSS \
+	threads: 4
+	shell:"computeMatrix reference-point -p {threads} --referencePoint TSS \
        -S {input} -R {REF_BED} \
        -b 1000 -a 1000 -o {output} >{log} 2>&1"
 

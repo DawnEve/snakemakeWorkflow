@@ -1,3 +1,5 @@
+# check ref files, if human or mouse, chr10 or 10 are match.
+
 REF_BED="/home/wangjl/data/ref/human/UCSC/hg38_refseq_whole_gene.bed"
 SI=["total"]
 

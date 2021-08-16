@@ -1,3 +1,4 @@
+# for BWA
 rule index:
 	input:"{sample}.bam"
 	output:"{sample}.bam.bai"

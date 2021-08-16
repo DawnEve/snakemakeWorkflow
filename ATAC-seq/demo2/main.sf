@@ -1,6 +1,8 @@
+# using bowtie2 mapping
+# cell-ranger use BWA, and I find more peak using BWA, so change back to BWA now.
 configfile: "config.yaml"
 SI=config["samples"]
-BWA_INDEX="/home/wangjl/data/ref/human/UCSC/bwa/hg38_fa"
+BWA_INDEX    ="/home/wangjl/data/ref/human/UCSC/bwa/hg38_fa"
 Bowtie2_INDEX="/home/wangjl/data/ref/human/GRCh38_bowtie2/GRCh38_noalt_as"
 
 rule all:
@@ -12,15 +14,14 @@ rule all:
 		#expand("map/{sample}.sort.bam", sample=SI),
 		#expand("map_clean/{sample}.final.bam", sample=SI),
 		"map_clean/done.txt",
-		#expand("macs2_result/{sample}_peaks.narrowPeak", sample=SI),
-
+		expand("macs2_result/{sample}_peaks.narrowPeak", sample=SI),
 
 include: "rules/01_QC_raw.sf"
 include: "rules/02_trim.sf"
 
-#include: "rules/03_BWA_map.sf"
-include: "rules/03_bowtie2_map.sf"
+include: "rules/03_BWA_map.sf"
+#include: "rules/03_bowtie2_map.sf"
 
 include: "rules/04_bam_filter.sf"
-#include: "rules/05_call_peak.sf"
+include: "rules/05_call_peak.sf"
 

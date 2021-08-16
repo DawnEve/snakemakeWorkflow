@@ -8,6 +8,7 @@ v0.7 add ATAC-seq for plate(demo2)
 v0.8 update ATAC-seq for plate method:demo2
 v0.9 add rules/08_get_matrix.sf
 v1.0 update ATAC/demo2 to bowtie2
+v1.1-0 add theads for map QC
 #
 #->commit
 #------>push to dawneve/snakemakeWorkflow

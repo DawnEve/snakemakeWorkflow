@@ -2,12 +2,16 @@ For scATAC-seq from plate methods
 v0.1
 v0.2 anno, pie plot
 v0.3 use bowtie2
-
+v0.4 add theads for map QC
 
 step 1: mapping one by one.
 step 2: merge bam, call peak, annotaion.
 
 ref: https://yiweiniu.github.io/blog/2019/03/ATAC-seq-data-analysis-from-FASTQ-to-peaks/
+
+
+Warning: double check the ref files(.fa, .gtf, .bed) to match human or mouse, and chr10 and 10.
+
 
 
 0. Softwares:
