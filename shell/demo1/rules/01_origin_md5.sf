@@ -1,0 +1,10 @@
+# step1: get origin md5sum
+rule getMd5_pre:
+        input: "raw/{sample}"
+        output: temp( "temp/{sample}.md5")
+        shell: "md5sum {input} > {output}"
+rule getMd5:
+        input: expand("temp/{sample}.md5", sample=SI)
+        output: "md5/origin.md5"
+        shell: "cat {input} > {output}"
+

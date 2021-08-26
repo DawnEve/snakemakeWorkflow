@@ -1,0 +1,10 @@
+# step4: md5 of unzip
+rule unzip_md5_pre:
+        input: "gz/{sample}.gz"
+        output: temp( "temp/{sample}.unzip.md5")
+        shell: "echo `gunzip -c {input} | md5sum | awk '{{print $1}}'`\"  raw/\"{wildcards.sample} > {output}"
+
+rule unzip_md5:
+        input: expand("temp/{sample}.unzip.md5", sample=SI)
+        output: "md5/unzip.md5"
+        shell: "cat {input} > {output}"

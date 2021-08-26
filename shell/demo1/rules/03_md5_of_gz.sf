@@ -1,0 +1,11 @@
+# step3: md5 of gz
+rule md5_gz_pre:
+        input: "gz/{sample}.gz"
+        output: temp( "temp/{sample}.gz.md5")
+        shell: "md5sum {input} > {output}"
+
+rule md5_gz:
+        input: expand("temp/{sample}.gz.md5", sample=SI)
+        output: "md5/gz.md5"
+        shell: "cat {input} > {output}"
+

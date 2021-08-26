@@ -1,0 +1,13 @@
+configfile: "config.yaml"
+
+SI=config["samples"]
+
+rule all:
+        input:
+                "md5/origin.md5",
+                #"md5/gz.md5",
+                "md5/unzip.md5",
+
+include: "rules/01_origin_md5.sf"
+#include: "rules/03_md5_of_gz.sf"
+include: "rules/04_md5_of_unzip.sf"
