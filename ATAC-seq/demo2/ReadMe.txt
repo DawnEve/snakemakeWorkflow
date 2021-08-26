@@ -3,7 +3,9 @@ v0.1
 v0.2 anno, pie plot
 v0.3 use bowtie2
 v0.4 add theads for map QC
+v0.5 change to mouse 38
 
+###########
 step 1: mapping one by one.
 step 2: merge bam, call peak, annotaion.
 
@@ -18,18 +20,27 @@ Warning: double check the ref files(.fa, .gtf, .bed) to match human or mouse, an
 $ bowtie2 --version
 /home/wangjl/soft/bowtie2-2.3.5.1-linux-x86_64/bowtie2-align-s version 2.3.5.1
 
+$ bwa
+Program: bwa (alignment via Burrows-Wheeler transformation)
+Version: 0.7.17-r1188
 
 
 
 
 1. snakemake: main.sf
-from fq to macs2 call peak.
+(1)modify: 
+- human or mouse?
+- 19 or 38?
+- in rule main.sf, rules/06, 07
+
+(2) fastq
+"raw/{sample}_R1.fastq.gz"
+"raw/{sample}_R2.fastq.gz"
+
+(3) from fq to macs2 call peak.
 $ snakemake -s /data/wangjl/soft/snakemakeWorkflow/ATAC-seq/demo2/main.sf -j 4 -p
 
-
 As reads are so few, we should merge the bam files.
-
-
 
 
 
@@ -62,3 +73,4 @@ use -s mainBulk.sf
 $ snakemake -s /data/wangjl/soft/snakemakeWorkflow/ATAC-seq/demo2/mainBulk.sf -j 5 -p
 
 (3) Goto Seurat R package to cluster cells.
+

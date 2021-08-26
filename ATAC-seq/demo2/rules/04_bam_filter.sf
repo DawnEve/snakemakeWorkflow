@@ -30,7 +30,7 @@ rule rm_low_MAPQ:
 	input:"map_clean/{sample}.sort.delMT.bam"
 	output:"map_clean/{sample}.sort.delMT.HmapQ.bam"
 	threads: 8
-	shell:"samtools view -@ {threads} -bh -q 30 {input} > {output}"
+	shell:"samtools view -@ {threads} -bh -q 10 {input} > {output}"
 
 # remove duplicate: 这个放最后的优势是，会自动生成bai文件
 

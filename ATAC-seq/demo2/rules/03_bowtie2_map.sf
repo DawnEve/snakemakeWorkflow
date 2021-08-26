@@ -3,14 +3,14 @@ rule bowtie2_mapping:
 		"clean/{sample}_R1.fastq.gz",
 		"clean/{sample}_R2.fastq.gz"
 	output:
-		temp("map/{sample}_bowtie2_hg38.sam")
+		temp("map/{sample}_bowtie2.sam")
 	threads: 4
-	log:"map/{sample}_bowtie2_hg38.sam.log"
+	log:"map/{sample}_bowtie2.sam.log"
 	shell:
 		"bowtie2 -p {threads} -N 1 -X 2000 -x {Bowtie2_INDEX} -1 {input[0]} -2 {input[1]} 2>{log} >{output}"
 
 rule sort_to_bam:
-	input:"map/{sample}_bowtie2_hg38.sam"
+	input:"map/{sample}_bowtie2.sam"
 	output:"map/{sample}.sort.bam"
 	params: tmp="/tmp/{sample}_tmp"
 	threads: 2

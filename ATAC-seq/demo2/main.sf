@@ -2,12 +2,19 @@
 # cell-ranger use BWA, and I find more peak using BWA, so change back to BWA now.
 configfile: "config.yaml"
 SI=config["samples"]
-BWA_INDEX    ="/home/wangjl/data/ref/human/UCSC/bwa/hg38_fa"
-Bowtie2_INDEX="/home/wangjl/data/ref/human/GRCh38_bowtie2/GRCh38_noalt_as"
+
+species="mouse"
+if "human" == species:
+	BWA_INDEX    ="/home/wangjl/data/ref/human/UCSC/bwa/hg38_fa"
+	#Bowtie2_INDEX="/home/wangjl/data/ref/human/GRCh38_bowtie2/GRCh38_noalt_as"
+elif "mouse" == species:
+	BWA_INDEX    ="/home/wangjl/data/ref/mouse/ensembl/index/GRCm38_"
+print("species: ", species)
+print("bwa index: ", BWA_INDEX)
 
 rule all:
 	input:
-		"QC_raw/multiqc/multiqc_report.html",
+		#"QC_raw/multiqc/multiqc_report.html",
 		#expand("clean2/{sample}_R1_val_1.fq.gz", sample=SI),
 		expand("clean/{sample}_R1.fastq.gz", sample=SI),
 		"QC_clean/multiqc/multiqc_report.html",
