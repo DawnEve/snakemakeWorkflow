@@ -5,19 +5,22 @@ rule index:
 	shell:"samtools index {input}"
 
 ## rm MT
-rule get_chrlist:
-	input:"map/{sample}.sort.bam"
-	output:"map_clean/{sample}.chrlist"
-	log:"map_clean/{sample}.chrlist.log"
-	shell:"samtools view  {input}| awk '{{print $3}}' \
-		| sort | uniq -c| grep -E -v 'GL|KI|JH|KB|chrM|\*' |  awk '{{print $2}}' | xargs > {output} 2>{log}"
+#rule get_chrlist:
+#	input:"map/{sample}.sort.bam"
+#	output:"map_clean/{sample}.chrlist"
+#	log:"map_clean/{sample}.chrlist.log"
+#	shell:"samtools view  {input}| awk '{{print $3}}' \
+#		| sort | uniq -c| grep -E -v 'GL|KI|JH|KB|M|\*' |  awk '{{print $2}}' | xargs > {output} 2>{log}"
 
-rule del_MTs:
-	input:"map_clean/{sample}.chrlist", "map/{sample}.sort.bam", "map/{sample}.sort.bam.bai"
+rule del_MTs_And_lowMAPQ:
+	input:
+		#"map_clean/{sample}.chrlist", 
+		"map/{sample}.sort.bam", "map/{sample}.sort.bam.bai"
 	output:"map_clean/{sample}.sort.delMT.bam"
-	threads: 2
+	threads: 4
 	log:"map_clean/{sample}.sort.delMT.bam.log"
-	shell:"samtools view -@ {threads} -bh {input[1]} `cat {input[0]}` > {output} 2>{log}"
+	#shell:"samtools view -@ {threads} -bh {input[0]} {Chrlist} > {output} 2>{log}"
+	shell:"samtools view -@ {threads} -bh -q 10 {input[0]} {Chrlist} > {output} 2>{log}"
 
 # filter by MAPQ:
 # 1 需要不需要按MAPQ过滤？需要，下例bowtie2按照>10过滤的。
@@ -26,16 +29,16 @@ rule del_MTs:
 # 3 怎么设置其他参数?
 # https://informatics.fas.harvard.edu/atac-seq-guidelines-old-version.html#alignments
 # https://github.com/ENCODE-DCC/atac-seq-pipeline/blob/master/src/encode_task_filter.py
-rule rm_low_MAPQ:
-	input:"map_clean/{sample}.sort.delMT.bam"
-	output:"map_clean/{sample}.sort.delMT.HmapQ.bam"
-	threads: 8
-	shell:"samtools view -@ {threads} -bh -q 10 {input} > {output}"
+#rule rm_low_MAPQ:
+#	input:"map_clean/{sample}.sort.delMT.bam"
+#	output:"map_clean/{sample}.sort.delMT.HmapQ.bam"
+#	threads: 8
+#	shell:"samtools view -@ {threads} -bh -q 10 {input} > {output}"
 
 # remove duplicate: 这个放最后的优势是，会自动生成bai文件
 
 rule sort2:
-	input:"map_clean/{sample}.sort.delMT.HmapQ.bam"
+	input:"map_clean/{sample}.sort.delMT.bam"
 	output:temp("map_clean/{sample}.sort.delMT.HmapQ.Sort2.bam")
 	params: tmp="/tmp/{sample}_tmp"
 	threads: 2
@@ -45,7 +48,7 @@ rule sort2:
 rule rm_dup:
 	input:"map_clean/{sample}.sort.delMT.HmapQ.Sort2.bam"
 	output:"map_clean/{sample}.final.bam"
-	threads: 8
+	threads: 4
 	params: tmp="map_clean/tmp/{sample}"
 	log:"map_clean/{sample}.sort.delMT.HmapQ.sambambaRmDup.bam.log"
 	shell:"sambamba markdup -r -t {threads} --tmpdir {params.tmp} {input} {output} >{log} 2>&1"

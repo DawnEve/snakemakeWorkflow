@@ -52,22 +52,28 @@ $ ls map_clean/*final.bam |xargs -i samtools view {} | wc
 51916420 886379942 11027899754
 ## 51 million reads.
 
+
+(1) Bam_QC:
+- merge bam
+- TSS heatmap, 
+- insertion length distribution
+
+##(jump, as)the following block has been included in bam_QC.sf
 $ mkdir merged
 $ samtools merge merged/total.bam `ls map_clean/*final.bam |xargs`
 $ samtools view  merged/total.bam |wc
 51916420 886379942 11027899754
+## need index first:
+$ samtools index  merged/total.bam
 
-
-(1) Bam_QC: TSS heatmap, insertion length distribution
-need index first:$ samtools index  merged/total.bam
 
 use -s bam_QC.sf
 $ snakemake -s /data/wangjl/soft/snakemakeWorkflow/ATAC-seq/demo2/bam_QC.sf -j 5 -p
 
 
 (2) call peak and find motif 
-peak annotation, get_8th_col, and pie plot
-getMatrix;
+- peak annotation, get_8th_col, and pie plot
+- getMatrix;
 
 use -s mainBulk.sf 
 $ snakemake -s /data/wangjl/soft/snakemakeWorkflow/ATAC-seq/demo2/mainBulk.sf -j 5 -p

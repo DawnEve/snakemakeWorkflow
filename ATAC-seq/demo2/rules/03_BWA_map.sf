@@ -16,5 +16,5 @@ rule sort_to_bam:
 	params: tmp="map/{sample}_tmp"
 	threads: 2
 	log: "map/{sample}.sort.bam.log"
-	shell:"samtools sort -@ {threads} -O bam -T /tmp/{params.tmp} -o {output} {input} >{log} 2>&1"
+	shell:"samtools sort -@ {threads} -O bam -T {params.tmp} -o {output} {input} >{log} 2>&1"
 
