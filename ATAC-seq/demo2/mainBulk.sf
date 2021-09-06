@@ -1,6 +1,16 @@
 # for merge bam and call peak, to get matrix
 SI=["total"]  
 
+species="mouse"
+if "human" == species:
+	GENOME   ="/home/wangjl/data/ref/human/UCSC/hg38.fa" #for rule06 findMotifsGenome.pl
+	GenomeVersion="hg38" # for rule07 annotatePeaks.pl
+elif "mouse" == species:
+	GENOME = "/home/wangjl/data/ref/mouse/ensembl/Mus_musculus.GRCm38.dna.primary_assembly.fa"
+	GenomeVersion = "mm10"
+## perl /home/wangjl/soft/homer/.//configureHomer.pl -install mm10  #for rule07
+## ls /home/wangjl/soft/homer/.//data/genomes/
+
 rule all:
 	input:
 		expand("homer/{sample}/knownResults.html", sample=SI),
@@ -25,4 +35,5 @@ rule macs2_callpeak:
 include:"rules/04_2_merge_bam.sf"
 include:"rules/06_find_motif.sf"
 include:"rules/07_peak_annotation.sf"
+
 include:"rules/08_get_matrix.sf"

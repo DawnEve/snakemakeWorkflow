@@ -1,3 +1,4 @@
+# get matrix
 rule get_bed:
 	input:"macs2_result/{sample}_peaks.narrowPeak"
 	output: "macs2_result/{sample}.bed"

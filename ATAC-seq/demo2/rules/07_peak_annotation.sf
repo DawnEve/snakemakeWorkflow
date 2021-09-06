@@ -1,8 +1,22 @@
+# for no chr
+
+## 临时添加，annotation for no chr
+rule add_chr:
+	input: "macs2_result/{sample}_peaks.narrowPeak"
+	output: "macs2_result/{sample}_peaks.narrowPeak2"
+	shell: "sed 's/^/chr/' {input} >{output}"
+rule peak_annotate_2:
+        input: "macs2_result/{sample}_peaks.narrowPeak2"
+        output: "anno/{sample}_peakAnn.xls"
+        log: "anno/{sample}_peakAnn.xls.log"
+        shell: "annotatePeaks.pl {input} {GenomeVersion} >{output} 2>{log}"
+# end
+
 rule peak_annotate:
 	input: "macs2_result/{sample}_peaks.narrowPeak"
-	output: "anno/{sample}_peakAnn.xls"
+	output: "anno/{sample}_peakAnn.xls----"
 	log: "anno/{sample}_peakAnn.xls.log"
-	shell: "annotatePeaks.pl {input} hg38 >{output} 2>{log}"
+	shell: "annotatePeaks.pl {input} {GenomeVersion} >{output} 2>{log}"
 
 rule get_8th_col:
 	input: "anno/{sample}_peakAnn.xls"

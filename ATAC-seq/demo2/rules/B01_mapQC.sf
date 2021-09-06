@@ -33,9 +33,10 @@ rule get_fragment_length:
 	input:"merged/{sample}.bam"
 	output:"QC_map/fragment_length/{sample}.fragment.length.txt"
 	log:"QC_map/fragment_length/{sample}.fragment.length.txt.log"
+	params: tmp="QC_map/"
 	shell:"samtools view {input} | \
 		awk -F'\t' 'function abs(x){{return ((x < 0.0) ? -x : x)}} {{print $1\"\t\"abs($9)}}' | \
-		sort | uniq | cut -f2 > {output} 2>{log}"
+		sort -T {params.tmp} | uniq | cut -f2 > {output} 2>{log}"
 
 rule draw_plot:
 	input: 

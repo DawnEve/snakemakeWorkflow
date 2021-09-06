@@ -12,6 +12,7 @@ v1.1-0 add theads for map QC
 v1.1-1 add shell md5 check gz
 v1.1-2 update ATAC/demo2 to BWA, mouse
 v1.1-3 update ATAC/demo2, add Chrlist parameter, samtools merge add threads
+v1.1.4 update ATAC/demo2, for mouse CRC
 #
 #->commit
 #------>push to dawneve/snakemakeWorkflow

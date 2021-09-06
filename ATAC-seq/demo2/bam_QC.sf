@@ -1,7 +1,13 @@
 # check ref files, if human or mouse, chr10 or 10 are match.
 
-REF_BED="/home/wangjl/data/ref/human/UCSC/hg38_refseq_whole_gene.bed"
+species="mouse"
+if "human" == species:
+	REF_BED="/home/wangjl/data/ref/human/UCSC/hg38_refseq_whole_gene.bed" # for 
+elif "mouse" == species:
+	REF_BED="/home/wangjl/data/ref/mouse/UCSC/mm10_refseq_whole_gene_noChr.bed"
+
 SI=["total"]
+print("REF_BED:", REF_BED)
 
 rule all:
 	input:

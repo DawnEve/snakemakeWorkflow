@@ -1,4 +1,3 @@
-GENOME   ="/home/wangjl/data/ref/human/UCSC/hg38.fa"
 ## 命令中指定输出目录
 rule homer_find_motif: 
 	input: "macs2_result/{sample}_peaks.narrowPeak"
